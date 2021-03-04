@@ -1,16 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:ital,wght@0,300;0,700;1,300&display=swap');
+
+:root {
+  /* Color Pallete */
+  --yellow: #FAFD7CFF;
+  --brown: #82491EFF;
+  --indigo: #24325FFF;
+  --lightBlue: #B7E4F9FF;
+  --red: #FB6467FF;
+  --green: #526E2DFF;
+  --pink: #E762D7FF;
+  --orange: #E89242FF;
+  --wheat: #FAE48BFF;
+  --aqua: #A6EEE6FF;
+  --brown2: #917C5DFF;
+  --blue: #69C8ECFF;
+  --black: #24282f;
+  --white: #fff;
+  --purple: #b16286;
+
+  /* Color Usage */
+  --backgroundColor: var(--white);
+  --textColor: var(--black);
+  --linkColor: var(--purple);
+  --navLinkColor: var(--white);
+  --navbarColor: var(--black);
+
+  /* Typography */
+  --baseFontSize: 24px;
+
+  /* Containers */
+  --maxContainerWidth: 95%;
+}
+
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: var(--baseFontSize);
+}
+
+html {
+  font-size: var(--baseFontSize);
 }
 
 a {
-  color: inherit;
+  color: var(--linkColor);
   text-decoration: none;
+  transition: font-size 0.3s ease-in-out;
+  outline: none;
+}
+
+a::after {
+  content: '';
+  display: block;
+  border-bottom: 2px solid var(--purple);
+  transform: scaleX(0);
+  transform-origin: 0%;
+  transition: transform ease-in-out 0.3s;
+}
+
+a:hover::after, a:focus::after {
+  transform: scaleX(1);
+}
+
+a[under="none"]::after {
+  content: none;
+}
+
+a[under]::after {
+  border-color: var(--white);
 }
 
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--backgroundColor);
+  color: var(--textColor);
+}
+
+main {
+  flex-grow: 1;
+  width: var(--maxContainerWidth);
+  align-self: center;
+}
+
+input {
+  border: 0;
+  border-bottom: 2px solid var(--black);
+  padding: 0.1rem 0.5rem;
+  font-size: var(--baseFontSize);
+  outline: none;
+  transition: border 0.2s ease-in-out;
+}
+
+input:focus {
+  border-bottom: 2px solid var(--blue);
+}
+
+input:focus::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: var(--blue);
+}
+
+input:focus::-moz-placeholder { /* Firefox 19+ */
+  color: var(--blue);
 }

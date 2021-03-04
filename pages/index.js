@@ -1,65 +1,61 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import {getAllCharacters, searchCharacter} from 'utils/api';
+import CardGrid from 'components/CardGrid';
+import CharacterCard from 'components/CharacterCard';
+import {useEffect} from 'react';
+import styles from 'styles/Home.module.css';
+import useAsync from 'hooks/useAsync';
+import {useSearchTerm} from 'context/searchContext';
+import Spinner from 'components/Spinner';
 
-export default function Home() {
+export default function Home({characters}) {
+  const {data: searchedCharacters, isLoading, isSuccess, isError, isIdle, error, run, resetState} = useAsync([]);
+  const [searchTerm, debouncedSearchTerm, setSearchTerm] = useSearchTerm();
+
+  function handleInput(event) {
+    setSearchTerm(event.target.value);
+  }
+
+  useEffect(function search() {
+    if (debouncedSearchTerm == "") {
+      resetState();
+      return;
+    }
+    run(searchCharacter(debouncedSearchTerm));
+  }, [debouncedSearchTerm, run]);
+
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Welcome | Rick and Morty </title>
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+      <div className={styles.searchbar}>
+        <input type="text" value={searchTerm} onChange={handleInput} placeholder="Search" />
+      </div>
+      <CardGrid>
+        <Characters isIdle={isIdle} isSuccess={isSuccess} isError={isError} isLoading={isLoading} characters={debouncedSearchTerm == "" ? characters : searchedCharacters} error={error} />
+      </CardGrid>
+    </>
   )
+}
+
+function Characters({isLoading, isSuccess, isError, isIdle, characters = [], error}) {
+  if (isLoading) {
+    return <Spinner />
+  } else if (isSuccess || isIdle) {
+    return characters.map(character => <CharacterCard key={character.id} character={character} />)
+  } else if (isError) {
+    console.log(error);
+    return <div>ERROR</div>
+  }
+
+}
+
+export async function getStaticProps() {
+  const characters = (await getAllCharacters());
+  return {
+    props: {
+      characters
+    }
+  }
 }

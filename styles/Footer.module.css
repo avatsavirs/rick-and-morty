@@ -1,0 +1,7 @@
+.footer {
+  min-height: 10rem;
+  background-color: var(--navbarColor);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}

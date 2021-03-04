@@ -1,0 +1,6 @@
+.container {
+  height: inherit;
+  display: grid;
+  place-items: center;
+  padding: 4rem 0;
+}
